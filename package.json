@@ -1,28 +1,28 @@
 {
   "name": "soap",
-  "version": "0.4.4",
-  "description": "A minimal node SOAP client",
+  "version": "0.1.2",
+  "description": "A minimal node SOAP client, forked from 0.1.2 version of vpulim/node-soap",
   "engines": {
-    "node": ">=0.8.0"
+    "node": ">=0.4.0"
   },
-  "author": "Vinay Pulim <v@pulim.com>",
+  "author": {
+    "name": "Vinay Pulim",
+    "email": "v@pulim.com"
+  },
   "dependencies": {
-    "sax": ">=0.6",
-    "request": ">=2.9.0",
-    "lodash": "~2.4.1"
+    "node-expat": ">= 1.3.0",
+    "request": "=2.2.6"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/milewise/node-soap.git"
+    "url": "https://github.com/BryanDonovan/node-soap.git"
   },
   "main": "./index.js",
   "directories": {
     "lib": "./lib"
   },
   "scripts": {
-    "mocha": "mocha test/*-test.js test/security/*.js",
-    "jshint": "jshint index.js lib test",
-    "test": "npm run-script jshint && npm run-script mocha"
+    "test": "mocha -R spec -u exports test/*-test.js"
   },
   "keywords": [
     "soap"
@@ -33,10 +33,11 @@
       "url": "http://www.opensource.org/licenses/mit-license.php"
     }
   ],
-  "devDependencies": {
-    "mocha": "~1.17.0",
-    "jshint": "~2.4.2",
-    "glob": "~3.2.8",
-    "should": "~3.3.0"
-  }
+  "readme": "This module lets you connect to web services using SOAP.  It also provides a server that allows you to run your own SOAP services.\n\nCurrent limitations:\n\n* Only a few XSD Schema types are supported\n* Only WS-Security is supported using UsernameToken and PasswordText encoding\n\n## Install\n\nInstall with [npm](http://github.com/isaacs/npm):\n\n    npm install soap\n\n## Module\n\n### soap.createClient(url, callback) - create a new SOAP client from a WSDL url\n\n    var soap = require('soap');\n    var url = 'http://example.com/wsdl?wsdl';\n    var args = {name: 'value'};\n    soap.createClient(url, function(err, client) {\n        client.MyFunction(args, function(err, result) {\n            console.log(result);\n        });\n    });\n\n### soap.listen(*server*, *path*, *services*, *wsdl*) - create a new SOAP server that listens on *path* and provides *services*. *wsdl* is an xml string that defines the service.\n\n    var myService = { \n        MyService: { \n            MyPort: { \n                MyFunction: function(args) {\n                    return {\n                        name: args.name\n                    };\n                }\n            }\n        }\n    }\n\n    var xml = require('fs').readFileSync('myservice.wsdl', 'utf8'),\n        server = http.createServer(function(request,response) {\n            response.end(\"404: Not Found: \"+request.url)\n        });\n        \n    server.listen(8000);\n    soap.listen(server, '/wsdl', myService, xml);\n\n## Client\n\nAn instance of Client is passed to the soap.createClient callback.  It is used to execute methods on the soap service.\n\n### Client.describe() - description of services, ports and methods as a JavaScript object\n\n    client.describe() => \n        { MyService: {\n            MyPort: {\n                MyFunction: {\n                    input: {\n                        name: 'string'\n                    }\n                }}}}\n\n### Client.setSecurity(security) - use the specified security protocol (see WSSecurity below)\n\n    client.setSecurity(new WSSecurity('username', 'password'))\n    \n### Client.*method*(args, callback) - call *method* on the SOAP service.  \n\n    client.MyFunction({name: 'value'}, function(err, result) {\n        // result is a javascript object        \n    })\n    \n### Client.*service*.*port*.*method*(args, callback) - call a *method* using a specific *service* and *port*\n\n    client.MyService.MyPort.MyFunction({name: 'value'}, function(err, result) {\n        // result is a javascript object                \n    })\n\n## WSSecurity\n\nWSSecurity implements WS-Security.  Currently, only UsernameToken and PasswordText is supported. An instance of WSSecurity is passed to Client.setSecurity.\n\n    new WSSecurity(username, password)",
+  "readmeFilename": "Readme.md",
+  "bugs": {
+    "url": "https://github.com/BryanDonovan/node-soap/issues"
+  },
+  "homepage": "https://github.com/BryanDonovan/node-soap",
+  "_id": "soap@0.1.2"
 }
